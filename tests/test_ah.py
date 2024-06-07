@@ -1,14 +1,14 @@
 from selenium.webdriver.support.wait import WebDriverWait
+import pytest
 
 from pages.main import AH_main
 from pages.search import AH_search
 from pages.product import AH_product_page
 
-
-def test_albert(_browser):
+@pytest.mark.parametrize('SEARCH_NAME', ['pindakaas', 'melk', 'brood'])
+def test_albert(_browser, SEARCH_NAME):
     
     URL = "https://www.ah.nl/"
-    SEARCH_NAME = "Pindakaas"
     ITEM_NAME_LINK = []
     ITEM_NUMBER = 2
 
