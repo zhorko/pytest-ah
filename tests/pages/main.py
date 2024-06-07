@@ -12,13 +12,13 @@ class AH_main:
     def open_page(self, url):
         self.driver.get(url)
 
-    # Searches hotel 
-    def search(self, wait):
+    # Searches product 
+    def search(self, wait, search_name):
         
         # Click on button 'Search' 
         try:
             wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "input[class^='search_input']"))
-            ).send_keys('pindakaas' + Keys.RETURN)
+            ).send_keys(search_name + Keys.RETURN)
         except exceptions.ElementNotInteractableException as e:
             print('{0} >> {1}'.format('input_btn', e))
