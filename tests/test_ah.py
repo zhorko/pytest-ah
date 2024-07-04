@@ -1,49 +1,32 @@
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.common import exceptions
+import pytest
 
+from pages.main import AH_main
+from pages.search import AH_search
+from pages.product import AH_product_page
 
-def test_temp (_browser):
+@pytest.mark.parametrize('SEARCH_NAME', ['pindakaas', 'melk', 'brood'])
+def test_albert(_browser, SEARCH_NAME):
     
-    _browser.get("https://www.ah.nl/")
+    URL = "https://www.ah.nl/"
+    ITEM_NAME_LINK = []
+    ITEM_NUMBER = 2
+
     wait = WebDriverWait(_browser, 20)
-    _browser.maximize_window()
+    
+    
+    main_page = AH_main(_browser)
+    main_page.open_page(URL)
+    main_page.search(wait, SEARCH_NAME)
 
-
-    try:
-        input_btn = wait.until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "input[class^='search_input']"))
-        ).send_keys('pindakaas' + Keys.RETURN)
-    except exceptions.ElementNotInteractableException as e:
-        print('{0} >> {1}'.format('input_btn', e))
-
-    try:
-        item_search = wait.until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, ".search-lane-wrapper article:nth-of-type(1) a"))
-        )
-    except exceptions.StaleElementReferenceException as e:
-        print('{0} >> {1}'.format('item_search', e))
-
-    try:
-        name_search = wait.until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, ".search-lane-wrapper article:nth-of-type(1) div[class^='body_root'] span"))
-        )
-    except exceptions.StaleElementReferenceException as e:
-        print('{0} >> {1}'.format('item_search', e))
-
-    item_name = name_search.text 
-
-    _browser.execute_script("window.open('" + item_search.get_attribute("href") +"')")
-
+    search_page = AH_search(_browser)
+    ITEM_NAME_LINK.extend(search_page.open_product(wait, ITEM_NUMBER))
+    
+    # .click() returns error, thereforth I'm getting link from element and then executing it with script
+    _browser.execute_script("window.open('" + ITEM_NAME_LINK[1] +"')")
+    
     _browser.switch_to.window(_browser.window_handles[1])
 
-    try:
-        name_product = wait.until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "div[class^='product-card-header_root'] span"))
-        )
-    except exceptions.StaleElementReferenceException as e:
-        print('{0} >> {1}'.format('item_search', e))
+    prod_page = AH_product_page(_browser)
 
-    assert name_product.text == item_name
+    assert (prod_page.get_product_name() == ITEM_NAME_LINK[0])
