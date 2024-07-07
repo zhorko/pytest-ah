@@ -9,7 +9,6 @@ This project automates the testing of functionalities on the [ah.nl](https://www
 - Automated browser interaction using Selenium WebDriver.
 - Comprehensive test cases covering search functionalities, product selection, and validation of product details.
 - Implementation of Page Object Model (POM) for better code organization and maintenance.
-- Data-driven testing with JSON files for test data.
 - Cross-browser compatibility for enhanced test coverage.
 - Detailed logging and reporting of test results.
 
